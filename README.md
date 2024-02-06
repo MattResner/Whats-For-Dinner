@@ -10,12 +10,44 @@ To help accomplish this task I created the report below using a public dataset a
 
 ## Report Data Connections and Modeling
 
-The data in the report is queried and transformed via three API Calls. The first call accesses the list of meal countries, the second expands that data with each meal in the database for the country, and the third call obtains recipes and ingredients for each of the meals. 
+The data in the report is queried and transformed via three API Calls. The first call accesses the list of meal countries, the second expands the country data with each meal in the database for the country, and the third call obtains recipes and ingredients for each of the meals. 
 
-### 
+### Initial Connection
 
-### GetMealInfoByID
+For more information on using relative path and query options in Web.Contents checkout my previous project on using relative path for Consumer Price Index Data [Link Here](https://github.com/MattResner/Power-BI-Relative-Path/tree/main).
 
+```'*.PowerQuery'
+let
+    //using the relative path method for source to enable automated refresh of Public API data.
+    BaseURL="www.themealdb.com/api/json/v1",
+    APISource="1/list.php?a=list",
+    Source = Json.Document(
+        Web.Contents(
+            BaseURL,
+            [RelativePath = APISource] 
+            
+            )),
+    meals = Source[meals],
+    //converting the CSV records to a table, expanding the table and renaming values before the first function
+    #"Converted to Table" = Table.FromList(meals, Splitter.SplitByNothing(), null, null, ExtraValues.Error), 
+    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"strArea"}, {"Column1.strArea"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Expanded Column1",{{"Column1.strArea", "Cuisine Type"}}),
+```
+### Writing Power Query (M) Functions
+
+
+### Power Query M Function 1 GetCusineByCountry
+```
+
+```
+### Power Query M Function 2 GetMealInfoByID
+```
+
+```
+### Implementing Function 1 & 2
+```
+
+```
 ## Data Cleaning
 
 ## Slicers and Report Design

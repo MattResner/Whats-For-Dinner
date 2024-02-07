@@ -146,7 +146,10 @@ After using GetMealInfoByID the data further expands with information on each me
 
 ## Data Cleaning
 
-Now that we've got all the data we need it's time to transform it into a user friendly data model. We 
+Now that we've got all the data we need it's time to transform it into a user friendly data model. We are accomplishing a few things in this block of code. 
+1. Getting rid of extrainious columns
+2. Renaming columns to remove the str prefix (I used a Rename Columns Function I wrote to do this but it can be done manually)
+3. Creating a custom field with concatinated ingredients to read as a shopping list for each recipe
 
 ```
 // Removing and Renaming columns as part of general cleanup
@@ -157,7 +160,8 @@ Now that we've got all the data we need it's time to transform it into a user fr
         #"Renamed Ingredient Columns" = #"Rename Columns"(#"Changed Type1", {"strIngredient1","strIngredient2","strIngredient3","strIngredient4","strIngredient5","strIngredient6","strIngredient7","strIngredient8","strIngredient9","strIngredient10","strIngredient11","strIngredient12","strIngredient13","strIngredient14","strIngredient15","strIngredient16","strIngredient17","strIngredient18","strIngredient19","strIngredient20","strMeasure1","strMeasure2","strMeasure3","strMeasure4","strMeasure5","strMeasure6","strMeasure7","strMeasure8","strMeasure9","strMeasure10","strMeasure11","strMeasure12","strMeasure13","strMeasure14","strMeasure15","strMeasure16","strMeasure17","strMeasure18","strMeasure19","strMeasure20"}, "str", ""),
         #"Renamed Columns2" = Table.RenameColumns(#"Renamed Ingredient Columns",{{"strSource", "Source"}, {"strTags", "Tags"}, {"strInstructions", "Instructions"}, {"strYoutube", "Youtube"}}),
 
-// Creating the custom field shopping list to include all ingredients in one field so that it reads like a recipe
+// Creating the custom field shopping list to include all ingredients in one field so that it reads like a recipe.
+//Since there are not the same number of ingredients for each recipe I don't want to return spaces when a recipe has 7 ingredients vs 15 ingredients
     #"Added Custom2" = Table.AddColumn(#"Renamed Columns2", "Shopping List", each Text.Combine({
       (if [Ingredient1] is null then null else [Ingredient1])   
     , (if [Ingredient2] is null then null else [Ingredient2]) 

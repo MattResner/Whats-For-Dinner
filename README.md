@@ -35,6 +35,25 @@ let
 ```
 ### Writing Power Query (M) Functions
 
+Writing functions in M is pretty straight forward and a great way to get familair with using the advanced editor. After the obgligitory let keyword each function follows the general pattern below:
+
+FunctionName = (Parameter 1 as DataType, Parameter 2 as DataType...) as DataType => DesiredCalculationOrSubsequentSteps
+
+Additionally, you may specificy an parameter as being optional with the precursor "optional" though you must order your parameters so that any optional parameters follow the required ones. The below is a simple example function that multiplys between one and three numbers of your choice. Parameter A is required while B and C are listed as optional. 
+
+```
+let
+    MathFun =
+    ( A as number
+    , optional B as number
+    , optional C as number
+    ) as number => A*B*C
+    
+    in MathFun
+```
+You can find out more about Power Query M Functions generally at https://learn.microsoft.com/en-us/powerquery-m/understanding-power-query-m-functions
+
+For the purposes of our project, functions are useful as we can dynamically construct and run API calls for specific records in our data. We will use this to our advantage twice, once for GetCusineByCountry and once for GetMealInfoByID
 
 ### Power Query M Function 1 GetCusineByCountry
 ```

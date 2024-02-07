@@ -197,4 +197,6 @@ At the end of our transformations we will have a shopping list in our data model
 
 ## Slicers and Report Design
 
-Text Filter Slicer 
+Lastly we will create our report visuals, slicers, and search function for the end user. 
+
+From a design perspective I wanted the report to feel like a physical cookbook so I opted for pages that

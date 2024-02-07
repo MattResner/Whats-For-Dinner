@@ -191,6 +191,9 @@ Now that we've got all the data we need it's time to transform it into a user fr
 in
     #"Renamed Columns3"
 ```
+At the end of our transformations we will have a shopping list in our data model that looks like this:
+
+![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/78a9c339-f864-4996-a1e5-ecd15558158a)
 
 ## Slicers and Report Design
 

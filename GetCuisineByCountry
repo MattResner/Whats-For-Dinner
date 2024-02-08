@@ -1,0 +1,23 @@
+//GetCuisineByCountry 
+let
+    Source = (CusineType) => //specifying parameter for our relative path 
+let //the start of the calculation for our function. In this case it is a web.contents relative path.
+    
+    #"BaseURL" = "www.themealdb.com/api/json/v1/", //www.themealdb.com/api/json/v1/1/filter.php?a=Canadian
+    Source = Json.Document( 
+        
+        Web.Contents(#"BaseURL", [
+            RelativePath = "1/filter.php?a="&CusineType //using the parameter in relative path
+            ]
+        )
+    ),
+    
+    meals = Source[meals],
+    //Additional transformational steps to convert the csv into our desired formatting and expanding/renaming values
+    #"Converted to Table" = Table.FromList(meals, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"strMeal", "strMealThumb", "idMeal"}, {"strMeal", "strMealThumb", "idMeal"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Expanded Column1",{{"strMeal", "Meal Name"}, {"strMealThumb", "Meal Image"}, {"idMeal", "Meal ID"}})
+in
+    #"Renamed Columns"
+in
+    Source

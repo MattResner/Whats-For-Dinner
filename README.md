@@ -5,8 +5,7 @@ As a working parent with a spouse in medical school one of my most consistant ch
 
 To help accomplish this task I created the report below using a public dataset and API at www.themealdb.com. Click on the picture to go to the live report in Power BI Services (Power BI License Required).
 
-[<img src="https://github.com/MattResner/Whats-For-Dinner/assets/123479836/14755883-3dba-48f7-937d-62b1af19e619">](https://app.powerbi.com/reportEmbed?reportId=707a53e4-cc09-4a2b-9776-f4383cfb8a68&autoAuth=true&ctid=464e15ea-9493-4708-95c2-66f24b51aef9)
-
+[<img src="https://github.com/MattResner/Whats-For-Dinner/assets/123479836/71d5c2a2-5f9d-4b22-b4e0-e8d9f19de5ce">](https://app.powerbi.com/reportEmbed?reportId=707a53e4-cc09-4a2b-9776-f4383cfb8a68&autoAuth=true&ctid=464e15ea-9493-4708-95c2-66f24b51aef9)
 
 ## Report Data Connections and Modeling
 
@@ -197,6 +196,34 @@ At the end of our transformations we will have a shopping list in our data model
 
 ## Slicers and Report Design
 
-Lastly we will create our report visuals, slicers, and search function for the end user. 
+Lastly, we will create our report visuals, slicers, and search functions for the end user. 
 
-From a design perspective I wanted the report to feel like a physical cookbook so I opted for pages that
+From a design and aesthetics perspective I wanted the report to feel like a physical cookbook so I opted for a square visual structure with two distinct sides to appear pagelike. Following this cookbook theme I wanted to choose a very nutral color palatte so that the photos of the food would attract the users eye and lead them to scroll and click on meal pictures that looked appatizing. 
+
+![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/415673b7-0f12-49a7-94b5-2de18b89e204)
+
+From a user experience perspective I wanted the report to be usable in three primary paths or patterns: 
+    1.  Visually exploring the database and getting inspired to make meals based on the pictures provided. 
+    2.  Searcing for ingredients on hand that are components on recipes. 
+    3.  Searching by Meal Category or Cuisine Type to discover foods from different cultures or traditions.
+
+To make the first objective possible I:
+1. Chose a data source that had images
+2. Labeled the data type as image url, created a table with images, and tweaked the size of the image until it was taking up the correct amount of space.
+
+![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/4f7ee760-52d5-4f2f-a295-c3ded745c2a5)
+
+![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/23a8419e-5996-4159-b886-2ce3c4b52c6a)
+
+To accomplish my second user experience goal I leveraged the free custom text filter visual found on Microsoft Marketplace. This visual enable the user to search for a text value (pantry ingredients) that they are wanting to make use of within a larger string (Recipe Ingredients)
+
+![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/e7bbe87e-4f04-4bdb-b9f1-b45e55cd84a1)
+
+
+For the last goal I added some slicers for Meal, Meal Category, and Cuisine Type. Generally, I like to make my text slicers both dropdown and searchable to save on visual space and provide a consistant experience. 
+
+![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/34b4a077-9e5e-4a3f-8d06-9556e45208fb)
+
+I'm quite happy with the report in it's final version. Some features that I considered but ultimatly didn't include were making it into a multiple page report with buttons for navigation (This didn't seem consistant with a cookbook), or hiding slicer options (I wanted to keep the options available since I didn't think the tool was going to be used extensively outside of my family).
+
+To help make this tool more useful please visit and support https://www.themealdb.com/ and submit more recipes to the database! 

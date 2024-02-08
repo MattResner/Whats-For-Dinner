@@ -1,0 +1,22 @@
+let
+    Source = (MealID) => //specifying parameter for our relative path 
+let
+    
+    #"BaseURL" = "www.themealdb.com/api/json/v1/", //www.themealdb.com/api/json/v1/1/lookup.php?i=52772
+
+    Source = Json.Document( 
+        
+        Web.Contents(#"BaseURL", [
+            RelativePath = "1/lookup.php?i="&Number.ToText(MealID)
+            ]
+        )
+    ),
+    
+    meals = Source[meals],
+    //Converting to table and expanding columns
+    #"Converted to Table" = Table.FromList(meals, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Expanded Column2" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"idMeal", "strMeal", "strDrinkAlternate", "strCategory", "strArea", "strInstructions", "strMealThumb", "strTags", "strYoutube", "strIngredient1", "strIngredient2", "strIngredient3", "strIngredient4", "strIngredient5", "strIngredient6", "strIngredient7", "strIngredient8", "strIngredient9", "strIngredient10", "strIngredient11", "strIngredient12", "strIngredient13", "strIngredient14", "strIngredient15", "strIngredient16", "strIngredient17", "strIngredient18", "strIngredient19", "strIngredient20", "strMeasure1", "strMeasure2", "strMeasure3", "strMeasure4", "strMeasure5", "strMeasure6", "strMeasure7", "strMeasure8", "strMeasure9", "strMeasure10", "strMeasure11", "strMeasure12", "strMeasure13", "strMeasure14", "strMeasure15", "strMeasure16", "strMeasure17", "strMeasure18", "strMeasure19", "strMeasure20", "strSource", "strImageSource", "strCreativeCommonsConfirmed", "dateModified"}, {"idMeal", "strMeal", "strDrinkAlternate", "strCategory", "strArea", "strInstructions", "strMealThumb", "strTags", "strYoutube", "strIngredient1", "strIngredient2", "strIngredient3", "strIngredient4", "strIngredient5", "strIngredient6", "strIngredient7", "strIngredient8", "strIngredient9", "strIngredient10", "strIngredient11", "strIngredient12", "strIngredient13", "strIngredient14", "strIngredient15", "strIngredient16", "strIngredient17", "strIngredient18", "strIngredient19", "strIngredient20", "strMeasure1", "strMeasure2", "strMeasure3", "strMeasure4", "strMeasure5", "strMeasure6", "strMeasure7", "strMeasure8", "strMeasure9", "strMeasure10", "strMeasure11", "strMeasure12", "strMeasure13", "strMeasure14", "strMeasure15", "strMeasure16", "strMeasure17", "strMeasure18", "strMeasure19", "strMeasure20", "strSource", "strImageSource", "strCreativeCommonsConfirmed", "dateModified"})
+in
+    #"Expanded Column2"
+in
+    Source

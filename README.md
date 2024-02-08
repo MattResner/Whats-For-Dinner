@@ -1,7 +1,7 @@
 # What's For Dinner?
 ### A Power BI Dashboard for International Cooking Inspiration and Meal Planning with Ingredients on Hand
 
-As a working parent with a spouse in medical school one of my most consistant challenges is developing a weekly meal plan. Balancing nutrition, ingredient costs, and labor involved is always difficult however, I wanted to see if I could solve another challenge, namely the creative job of generating new meal ideas while taking current pantry and fridge items into account. 
+As a working parent with a spouse in medical school one of my most consistent challenges is developing a weekly meal plan. Balancing nutrition, ingredient costs, and labor involved is always difficult. However, I wanted to see if I could solve another challenge, namely the creative job of generating new meal ideas while taking current pantry and fridge items into account. 
 
 To help accomplish this task I created the report below using a public dataset and API at www.themealdb.com. Click on the picture to go to the live report in Power BI Services (Power BI License Required).
 
@@ -27,7 +27,7 @@ let
             
             )),
     meals = Source[meals],
-    //converting the CSV records to a table, expanding the table and renaming values before the first function
+    //converting the CSV records to a table, expanding the table, and renaming values before the first function
     #"Converted to Table" = Table.FromList(meals, Splitter.SplitByNothing(), null, null, ExtraValues.Error), 
     #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"strArea"}, {"Column1.strArea"}),
     #"Renamed Columns" = Table.RenameColumns(#"Expanded Column1",{{"Column1.strArea", "Cuisine Type"}}),
@@ -39,15 +39,15 @@ Following our initial API call and transformation our data looks like this.
 
 ### Writing Power Query (M) Functions
 
-Writing functions in M is pretty straight forward and a great way to get familair with using the advanced editor. 
+Writing functions in M is pretty straight forward and a great way to get familiar with using the advanced editor. 
 
-After the obgligitory let keyword each function follows the general pattern below:
+After the obligatory let keyword, each function follows the general pattern below:
 
 FunctionName = (Parameter 1 as DataType, Parameter 2 as DataType...) as DataType => DesiredCalculationOrSubsequentSteps
 
-Additionally, you may specificy an parameter as being optional with the precursor "optional" though you must order your parameters so that any optional parameters follow the required ones. 
+Additionally, you may specify a parameter as being optional with the precursor "optional" though you must order your parameters so that any optional parameters follow the required ones. 
 
-The below is a simple example function that multiplys between one and three numbers of your choice. Parameter A is required while B and C are listed as optional. 
+Below is a simple example function that multiplies between one and three numbers of your choice. Parameter A is required while B and C are listed as optional. 
 
 ```
 let
@@ -61,22 +61,22 @@ let
 ```
 You can find out more about Power Query M Functions generally at https://learn.microsoft.com/en-us/powerquery-m/understanding-power-query-m-functions
 
-For the purposes of our project, functions are useful as we can dynamically construct and run API calls for specific records in our data. We will use this to our advantage twice, once for GetCusineByCountry and once for GetMealInfoByID
+For the purposes of our project, functions are useful as we can dynamically construct and run API calls for specific records in our data. We will use this to our advantage twice, once for GetCuisineByCountry and once for GetMealInfoByID
 
-### Power Query M Function 1 GetCusineByCountry
+### Power Query M Function 1 GetCuisineByCountry
 
-The below function takes a parameter Cusine Type and returns meal records from the API.
+The below function takes a parameter Cuisine Type and returns meal records from the API.
 
 ```
 let
-    Source = (CusineType) => //specifying parameter for our relative path 
+    Source = (CuisineType) => //specifying parameter for our relative path 
 let //the start of the calculation for our function. In this case it is a web.contents relative path.
     
     #"BaseURL" = "www.themealdb.com/api/json/v1/", //www.themealdb.com/api/json/v1/1/filter.php?a=Canadian
     Source = Json.Document( 
         
         Web.Contents(#"BaseURL", [
-            RelativePath = "1/filter.php?a="&CusineType //using the parameter in relative path
+            RelativePath = "1/filter.php?a="&CuisineType //using the parameter in relative path
             ]
         )
     ),
@@ -124,8 +124,8 @@ in
 After writing those two functions we will use them sequentially on our data by calling the functions within a custom column. In the first custom column we refer to the Cuisine Type as our parameter and in the second we use the Meal ID.
 
 ```
-//Calling our first function GetCusineByCountry and expanding associated data
-    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Meals", each GetCusineByCountry([Cuisine Type])),
+//Calling our first function GetCuisineByCountry and expanding associated data
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Meals", each GetCuisineByCountry([Cuisine Type])),
         #"Expanded Meals" = Table.ExpandTableColumn(#"Added Custom", "Meals", {"Meal Name", "Meal Image", "Meal ID"}, {"Meal Name", "Meal Image", "Meal ID"}),
         #"Changed Type" = Table.TransformColumnTypes(#"Expanded Meals",{{"Meal ID", Int64.Type}}),
 
@@ -135,7 +135,7 @@ After writing those two functions we will use them sequentially on our data by c
 
 ```
 
-After using GetCusineByCountry the data expands with each meal record.
+After using GetCuisineByCountry the data expands with each meal record.
 
 ![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/6f0b5361-cbc3-47f1-99f1-b3383d72b4b2)
 
@@ -146,9 +146,9 @@ After using GetMealInfoByID the data further expands with information on each me
 ## Data Cleaning
 
 Now that we've got all the data we need it's time to transform it into a user friendly data model. We are accomplishing a few things in this block of code. 
-1. Getting rid of extrainious columns
+1. Getting rid of extraneous columns
 2. Renaming columns to remove the str prefix (I used a Rename Columns Function I wrote to do this but it can be done manually)
-3. Creating a custom field with concatinated ingredients to read as a shopping list for each recipe
+3. Creating a custom field with concatenated ingredients to read as a shopping list for each recipe
 
 ```
 // Removing and Renaming columns as part of general cleanup
@@ -160,7 +160,7 @@ Now that we've got all the data we need it's time to transform it into a user fr
         #"Renamed Columns2" = Table.RenameColumns(#"Renamed Ingredient Columns",{{"strSource", "Source"}, {"strTags", "Tags"}, {"strInstructions", "Instructions"}, {"strYoutube", "Youtube"}}),
 
 // Creating the custom field shopping list to include all ingredients in one field so that it reads like a recipe.
-//Since there are not the same number of ingredients for each recipe I don't want to return spaces when a recipe has 7 ingredients vs 15 ingredients
+//Since there are not the same number of ingredients for each recipe, I don't want to return spaces when a recipe has 7 ingredients vs 15 ingredients
     #"Added Custom2" = Table.AddColumn(#"Renamed Columns2", "Shopping List", each Text.Combine({
       (if [Ingredient1] is null then null else [Ingredient1])   
     , (if [Ingredient2] is null then null else [Ingredient2]) 
@@ -190,7 +190,7 @@ Now that we've got all the data we need it's time to transform it into a user fr
 in
     #"Renamed Columns3"
 ```
-At the end of our transformations we will have a shopping list in our data model that looks like this:
+At the end of our transformations, we will have a shopping list in our data model that looks like this:
 
 ![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/78a9c339-f864-4996-a1e5-ecd15558158a)
 
@@ -198,32 +198,33 @@ At the end of our transformations we will have a shopping list in our data model
 
 Lastly, we will create our report visuals, slicers, and search functions for the end user. 
 
-From a design and aesthetics perspective I wanted the report to feel like a physical cookbook so I opted for a square visual structure with two distinct sides to appear pagelike. Following this cookbook theme I wanted to choose a very nutral color palatte so that the photos of the food would attract the users eye and lead them to scroll and click on meal pictures that looked appatizing. 
+From a design and aesthetics perspective I wanted the report to feel like a physical cookbook, so I opted for a square visual structure with two distinct sides to appear pagelike. Following this cookbook theme I wanted to choose a very neutral color palette so that the photos of the food would attract the users eye and lead them to scroll and click on meal pictures that looked appetizing. 
 
 ![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/415673b7-0f12-49a7-94b5-2de18b89e204)
 
 From a user experience perspective I wanted the report to be usable in three primary paths or patterns: 
     1.  Visually exploring the database and getting inspired to make meals based on the pictures provided. 
-    2.  Searcing for ingredients on hand that are components on recipes. 
+    2.  Searching for ingredients on hand that are components on recipes. 
     3.  Searching by Meal Category or Cuisine Type to discover foods from different cultures or traditions.
 
 To make the first objective possible I:
 1. Chose a data source that had images
-2. Labeled the data type as image url, created a table with images, and tweaked the size of the image until it was taking up the correct amount of space.
+2. Labeled the data type as image URL, created a table with images, and tweaked the size of the image until it was taking up the correct amount of space.
 
 ![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/4f7ee760-52d5-4f2f-a295-c3ded745c2a5)
 
 ![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/23a8419e-5996-4159-b886-2ce3c4b52c6a)
 
-To accomplish my second user experience goal I leveraged the free custom text filter visual found on Microsoft Marketplace. This visual enable the user to search for a text value (pantry ingredients) that they are wanting to make use of within a larger string (Recipe Ingredients)
+To accomplish my second user experience goal, I leveraged the free custom text filter visual found on Microsoft Marketplace. This visual enable the user to search for a text value (pantry ingredients) that they are wanting to make use of within a larger string (Recipe Ingredients)
 
 ![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/e7bbe87e-4f04-4bdb-b9f1-b45e55cd84a1)
 
 
-For the last goal I added some slicers for Meal, Meal Category, and Cuisine Type. Generally, I like to make my text slicers both dropdown and searchable to save on visual space and provide a consistant experience. 
+For the last goal I added slicers for Meal, Meal Category, and Cuisine Type. Generally, I like to make my text slicers both dropdown and searchable to save on visual space and provide a consistent experience. 
 
 ![image](https://github.com/MattResner/Whats-For-Dinner/assets/123479836/34b4a077-9e5e-4a3f-8d06-9556e45208fb)
 
-I'm quite happy with the report in it's final version. Some features that I considered but ultimatly didn't include were making it into a multiple page report with buttons for navigation (This didn't seem consistant with a cookbook), or hiding slicer options (I wanted to keep the options available since I didn't think the tool was going to be used extensively outside of my family).
+I'm quite happy with the report in its final version. Some features that I considered but ultimately didn't include were making it into a multiple page report with buttons for navigation (This didn't seem consistent with a cookbook), or hiding slicer options (I wanted to keep the options available since I didn't think the tool was going to be used extensively outside of my family).
 
-To help make this tool more useful please visit and support https://www.themealdb.com/ and submit more recipes to the database! 
+To help make this tool more useful please visit and support https://www.themealdb.com/ and submit more recipes to the database!
+

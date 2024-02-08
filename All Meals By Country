@@ -1,0 +1,61 @@
+let
+    //using the relative path method for source to enable automated refresh of Public API data.
+    BaseURL="www.themealdb.com/api/json/v1",
+    APISource="1/list.php?a=list",
+    Source = Json.Document(
+        Web.Contents(
+            BaseURL,
+            [RelativePath = APISource] 
+            
+            )),
+    meals = Source[meals],
+    //converting the CSV records to a table, expanding the table and renaming values before the first function
+    #"Converted to Table" = Table.FromList(meals, Splitter.SplitByNothing(), null, null, ExtraValues.Error), 
+    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"strArea"}, {"Column1.strArea"}),
+    #"Renamed Columns" = Table.RenameColumns(#"Expanded Column1",{{"Column1.strArea", "Cuisine Type"}}),
+    //Calling our first function GetCusineByCountry and expanding associated data
+    #"Added Custom" = Table.AddColumn(#"Renamed Columns", "Meals", each GetCusineByCountry([Cuisine Type])),
+        #"Expanded Meals" = Table.ExpandTableColumn(#"Added Custom", "Meals", {"Meal Name", "Meal Image", "Meal ID"}, {"Meal Name", "Meal Image", "Meal ID"}),
+        #"Changed Type" = Table.TransformColumnTypes(#"Expanded Meals",{{"Meal ID", Int64.Type}}),
+    //Calling our second function GetMealInfoByID and expanding associated data
+    #"Added Custom1" = Table.AddColumn(#"Changed Type", "Meal Information", each GetMealInfoByID([Meal ID])),
+        #"Expanded Meal Information" = Table.ExpandTableColumn(#"Added Custom1", "Meal Information", {"idMeal", "strMeal", "strDrinkAlternate", "strCategory", "strArea", "strInstructions", "strMealThumb", "strTags", "strYoutube", "strIngredient1", "strIngredient2", "strIngredient3", "strIngredient4", "strIngredient5", "strIngredient6", "strIngredient7", "strIngredient8", "strIngredient9", "strIngredient10", "strIngredient11", "strIngredient12", "strIngredient13", "strIngredient14", "strIngredient15", "strIngredient16", "strIngredient17", "strIngredient18", "strIngredient19", "strIngredient20", "strMeasure1", "strMeasure2", "strMeasure3", "strMeasure4", "strMeasure5", "strMeasure6", "strMeasure7", "strMeasure8", "strMeasure9", "strMeasure10", "strMeasure11", "strMeasure12", "strMeasure13", "strMeasure14", "strMeasure15", "strMeasure16", "strMeasure17", "strMeasure18", "strMeasure19", "strMeasure20", "strSource", "strImageSource", "strCreativeCommonsConfirmed", "dateModified"}, {"idMeal", "strMeal", "strDrinkAlternate", "strCategory", "strArea", "strInstructions", "strMealThumb", "strTags", "strYoutube", "strIngredient1", "strIngredient2", "strIngredient3", "strIngredient4", "strIngredient5", "strIngredient6", "strIngredient7", "strIngredient8", "strIngredient9", "strIngredient10", "strIngredient11", "strIngredient12", "strIngredient13", "strIngredient14", "strIngredient15", "strIngredient16", "strIngredient17", "strIngredient18", "strIngredient19", "strIngredient20", "strMeasure1", "strMeasure2", "strMeasure3", "strMeasure4", "strMeasure5", "strMeasure6", "strMeasure7", "strMeasure8", "strMeasure9", "strMeasure10", "strMeasure11", "strMeasure12", "strMeasure13", "strMeasure14", "strMeasure15", "strMeasure16", "strMeasure17", "strMeasure18", "strMeasure19", "strMeasure20", "strSource", "strImageSource", "strCreativeCommonsConfirmed", "dateModified"}),
+    // Renaming columns in bulk using a custom function Table.RenameColumns
+    #"Removed Columns" = Table.RemoveColumns(#"Expanded Meal Information",{"idMeal", "strDrinkAlternate", "strMeal"}),
+    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns",{{"strCategory", "Meal Category"}}),
+        #"Removed Columns1" = Table.RemoveColumns(#"Renamed Columns1",{"strArea", "strMealThumb", "strImageSource", "strCreativeCommonsConfirmed", "dateModified"}),
+        #"Changed Type1" = Table.TransformColumnTypes(#"Removed Columns1",{{"strIngredient20", type text}, {"strIngredient19", type text}, {"strIngredient18", type text}, {"strIngredient17", type text}, {"strIngredient16", type text}, {"strIngredient15", type text}, {"strIngredient14", type text}, {"strIngredient13", type text}, {"strIngredient12", type text}, {"strIngredient11", type text}, {"strIngredient10", type text}, {"strIngredient9", type text}, {"strIngredient8", type text}, {"strIngredient7", type text}, {"strIngredient6", type text}, {"strIngredient5", type text}, {"strIngredient4", type text}, {"strIngredient3", type text}, {"strIngredient2", type text}, {"strIngredient1", type text}, {"strYoutube", type text}, {"strSource", type text}, {"strMeasure20", type text}, {"strMeasure19", type text}, {"strMeasure18", type text}, {"strMeasure17", type text}, {"strMeasure16", type text}, {"strMeasure15", type text}, {"strMeasure14", type text}, {"strMeasure13", type text}, {"strMeasure12", type text}, {"strMeasure11", type text}, {"strMeasure10", type text}, {"strMeasure9", type text}, {"strMeasure8", type text}, {"strMeasure7", type text}, {"strMeasure6", type text}, {"strMeasure5", type text}, {"strMeasure4", type text}, {"strMeasure3", type text}, {"strMeasure2", type text}, {"strMeasure1", type text}, {"strTags", type text}, {"strInstructions", type text}, {"Meal Category", type text}, {"Meal ID", type text}, {"Meal Image", type text}, {"Meal Name", type text}, {"Cuisine Type", type text}}),
+        #"Renamed Ingredient Columns" = #"Rename Columns"(#"Changed Type1", {"strIngredient1","strIngredient2","strIngredient3","strIngredient4","strIngredient5","strIngredient6","strIngredient7","strIngredient8","strIngredient9","strIngredient10","strIngredient11","strIngredient12","strIngredient13","strIngredient14","strIngredient15","strIngredient16","strIngredient17","strIngredient18","strIngredient19","strIngredient20","strMeasure1","strMeasure2","strMeasure3","strMeasure4","strMeasure5","strMeasure6","strMeasure7","strMeasure8","strMeasure9","strMeasure10","strMeasure11","strMeasure12","strMeasure13","strMeasure14","strMeasure15","strMeasure16","strMeasure17","strMeasure18","strMeasure19","strMeasure20"}, "str", ""),
+        #"Renamed Columns2" = Table.RenameColumns(#"Renamed Ingredient Columns",{{"strSource", "Source"}, {"strTags", "Tags"}, {"strInstructions", "Instructions"}, {"strYoutube", "Youtube"}}),
+    // Creating the custom field shopping list to include all ingredients in one field so that it reads like a recipe
+    #"Added Custom2" = Table.AddColumn(#"Renamed Columns2", "Shopping List", each Text.Combine({
+      (if [Ingredient1] is null then null else [Ingredient1])   
+    , (if [Ingredient2] is null then null else [Ingredient2]) 
+    , (if [Ingredient3] is null then null else [Ingredient3])  
+    , (if [Ingredient4] is null then null else [Ingredient4])
+    , (if [Ingredient5] is null then null else [Ingredient5])
+    , (if [Ingredient6] is null then null else [Ingredient6])
+    , (if [Ingredient7] is null then null else [Ingredient7])
+    , (if [Ingredient8] is null then null else [Ingredient8])
+    , (if [Ingredient9] is null then null else [Ingredient9]) 
+    , (if [Ingredient10] is null then null else [Ingredient10])
+    , (if [Ingredient11] is null then null else [Ingredient11])
+    , (if [Ingredient12] is null then null else [Ingredient12])
+    , (if [Ingredient13] is null then null else [Ingredient13])
+    , (if [Ingredient14] is null then null else [Ingredient14]) 
+    , (if [Ingredient15] is null then null else [Ingredient15])
+    , (if [Ingredient16] is null then null else [Ingredient16])
+    , (if [Ingredient17] is null then null else [Ingredient17])
+    , (if [Ingredient18] is null then null else [Ingredient18])
+    , (if [Ingredient19] is null then null else [Ingredient19]) 
+    , (if [Ingredient20] is null then null else [Ingredient20])   
+    
+    }, "
+")),
+    #"Changed Type2" = Table.TransformColumnTypes(#"Added Custom2",{{"Shopping List", type text}}),
+    #"Renamed Columns3" = Table.RenameColumns(#"Changed Type2",{{"Meal Name", "Meal"}}),
+    #"Replaced Value" = Table.ReplaceValue(#"Renamed Columns3"," Bubble & Squeak","Bubble & Squeak",Replacer.ReplaceText,{"Meal"}),
+    #"Sorted Rows" = Table.Sort(#"Replaced Value",{{"Meal", Order.Ascending}}),
+    #"Filtered Rows" = Table.SelectRows(#"Sorted Rows", each [Meal ID] <> "52896")
+in
+    #"Filtered Rows"

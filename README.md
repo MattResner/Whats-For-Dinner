@@ -5,7 +5,7 @@ As a working parent with a spouse in medical school one of my most consistent ch
 
 To help accomplish this task I created the report below using a public dataset and API at www.themealdb.com. You can download the desktop file .pbip above to use it yourself. 
 
-[<img src="https://github.com/MattResner/Whats-For-Dinner/assets/123479836/71d5c2a2-5f9d-4b22-b4e0-e8d9f19de5ce">].
+<img src="https://github.com/MattResner/Whats-For-Dinner/assets/123479836/71d5c2a2-5f9d-4b22-b4e0-e8d9f19de5ce">
 
 ## Report Data Connections and Modeling
 

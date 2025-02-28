@@ -3,9 +3,9 @@
 
 As a working parent with a spouse in medical school one of my most consistent challenges is developing a weekly meal plan. Balancing nutrition, ingredient costs, and labor involved is always difficult. However, I wanted to see if I could solve another challenge, namely the creative job of generating new meal ideas while taking current pantry and fridge items into account. 
 
-To help accomplish this task I created the report below using a public dataset and API at www.themealdb.com. Click on the picture to go to the live report in Power BI Services (Power BI License Required).
+To help accomplish this task I created the report below using a public dataset and API at www.themealdb.com. You can download the desktop file .pbip above to use it yourself. 
 
-[<img src="https://github.com/MattResner/Whats-For-Dinner/assets/123479836/71d5c2a2-5f9d-4b22-b4e0-e8d9f19de5ce">](https://app.powerbi.com/reportEmbed?reportId=707a53e4-cc09-4a2b-9776-f4383cfb8a68&autoAuth=true&ctid=464e15ea-9493-4708-95c2-66f24b51aef9)
+[<img src="https://github.com/MattResner/Whats-For-Dinner/assets/123479836/71d5c2a2-5f9d-4b22-b4e0-e8d9f19de5ce">].
 
 ## Report Data Connections and Modeling
 
